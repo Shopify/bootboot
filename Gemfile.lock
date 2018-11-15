@@ -1,0 +1,22 @@
+PATH
+  remote: .
+  specs:
+    bootboot (0.1.0)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    minitest (5.11.3)
+    rake (10.5.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  bootboot!
+  bundler (~> 1.17)
+  minitest (~> 5.0)
+  rake (~> 10.0)
+
+BUNDLED WITH
+   1.17.1
