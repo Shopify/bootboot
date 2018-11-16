@@ -3,8 +3,6 @@
 module Bootboot
   class GemfileNextAutoSync < Bundler::Plugin::API
     def setup
-      return unless GEMFILE_NEXT.exist?
-
       check_bundler_version
       opt_in
     end
@@ -13,7 +11,7 @@ module Bootboot
 
     def check_bundler_version
       self.class.hook("before-install-all") do
-        next if Bundler::VERSION >= "1.17.0"
+        next if Bundler::VERSION >= "1.17.0" || !GEMFILE_NEXT.exist?
 
         Bundler.ui.warn(<<-EOM.gsub(/\s+/, " "))
           Bootboot can't automatically update the Gemfile_next.lock because you are running
@@ -26,19 +24,10 @@ module Bootboot
 
     def opt_in
       self.class.hook("after-install-all") do
-        bump_gemfile_next
+        current_definition = Bundler.definition
+
+        update!(current_definition) unless current_definition.nothing_changed? && GEMFILE_NEXT.exist?
       end
-    end
-
-    def bump_gemfile_next
-      current_definition = Bundler.definition
-      previous_definition = Bundler.definition(true)
-
-      update!(current_definition) unless nothing_updated?(previous_definition, current_definition)
-    end
-
-    def nothing_updated?(previous_definition, current_definition)
-      previous_definition.locked_gems.specs == current_definition.locked_gems.specs
     end
 
     def update!(current_definition)
