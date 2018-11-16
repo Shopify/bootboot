@@ -26,7 +26,8 @@ module Bootboot
       self.class.hook("after-install-all") do
         current_definition = Bundler.definition
 
-        update!(current_definition) unless current_definition.nothing_changed? || GEMFILE_NEXT.exist?
+        next if current_definition.nothing_changed? || !GEMFILE_NEXT.exist?
+        update!(current_definition)
       end
     end
 
