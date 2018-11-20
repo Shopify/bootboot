@@ -2,7 +2,11 @@
 
 module DefinitionPatch
   def initialize(wrong_lock, *args)
-    lockfile = Pathname.new("#{Bundler::SharedHelpers.default_gemfile}_next.lock")
+    lockfile = if ENV['SKIP_BUNDLER_PATCH']
+      wrong_lock
+    else
+      Bootboot::GEMFILE_NEXT_LOCK
+    end
 
     super(lockfile, *args)
   end
@@ -10,7 +14,7 @@ end
 
 module SharedHelpersPatch
   def default_lockfile
-    Pathname.new("#{default_gemfile}_next.lock")
+    Bootboot::GEMFILE_NEXT_LOCK
   end
 end
 

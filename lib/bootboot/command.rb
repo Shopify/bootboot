@@ -9,7 +9,7 @@ module Bootboot
     end
 
     def exec(_cmd, _args)
-      FileUtils.cp("#{GEMFILE}.lock", GEMFILE_NEXT)
+      FileUtils.cp(GEMFILE_LOCK, GEMFILE_NEXT_LOCK)
 
       File.open(GEMFILE, 'a+') do |f|
         f.write(<<-EOM)
@@ -19,7 +19,7 @@ if ENV['DEPENDENCIES_NEXT']
   enable_dual_booting if Plugin.installed?('bootboot')
 
   # Add any gem you want here, they will be loaded only when running
-  # bundler command prefixed with `#{DUALBOOT_ENV}=1`.
+  # bundler command prefixed with `#{DUALBOOT_NEXT}=1`.
 end
 EOM
       end
