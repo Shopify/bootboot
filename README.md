@@ -46,7 +46,7 @@ Installation
 ------------
 1) In your Gemfile, add this
 ```ruby
-plugin 'bootboot', '~> 1.0`
+plugin 'bootboot', '~> 0.1.1`
 ```
 2) Run `bundle install && bundle bootboot`
 3) You're done. Commit the Gemfile and the Gemfile_next.lock
