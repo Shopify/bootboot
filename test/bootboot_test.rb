@@ -131,7 +131,7 @@ class BootbootTest < Minitest::Test
   def test_sync_the_lock_when_the_next_lock_gets_updated_rak
     gemfile_content = <<-EOM
       source "https://rubygems.org"
-      plugin 'bootboot', git: '#{Bundler.root}'
+      #{plugin}
       Plugin.send(:load_plugin, 'bootboot') if Plugin.installed?('bootboot')
 
       unless ENV['DEPENDENCIES_PREVIOUS']
@@ -161,7 +161,7 @@ class BootbootTest < Minitest::Test
   end
 
   def test_bootboot_command_initialize_the_next_lock_and_update_the_gemfile
-    write_gemfile("source 'https://rubygems.org'\nplugin 'bootboot', git: '#{Bundler.root}'\n") do |file, dir|
+    write_gemfile("source 'https://rubygems.org'\n#{plugin}\n") do |file, dir|
       run_bundler_command('bundle bootboot', file.path)
 
       assert File.exist?(gemfile_next(file))
@@ -195,7 +195,8 @@ class BootbootTest < Minitest::Test
     file = Tempfile.new('Gemfile', dir).tap do |f|
       f.write(content || <<-EOM)
         source "https://rubygems.org"
-        plugin 'bootboot', git: '#{Bundler.root}'
+
+        #{plugin}
         Plugin.send(:load_plugin, 'bootboot') if Plugin.installed?('bootboot')
 
         if ENV['DEPENDENCIES_NEXT']
@@ -210,6 +211,12 @@ class BootbootTest < Minitest::Test
     yield(file, dir)
   ensure
     FileUtils.remove_dir(dir, true)
+  end
+
+  def plugin
+    branch = `git rev-parse --abbrev-ref HEAD`.strip
+
+    "plugin 'bootboot', git: '#{Bundler.root}', branch: '#{branch}'"
   end
 
   def run_bundler_command(command, gemfile_path, env: {})
