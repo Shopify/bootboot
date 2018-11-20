@@ -7,7 +7,7 @@ module Bootboot
   DUALBOOT_ENV = 'DEPENDENCIES_NEXT'
 
   autoload :GemfileNextAutoSync, 'bootboot/gemfile_next_auto_sync'
-  autoload :Command, 'bootboot/command'
+  autoload :Command,             'bootboot/command'
 end
 
 Bootboot::GemfileNextAutoSync.new.setup
