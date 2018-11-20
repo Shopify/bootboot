@@ -11,7 +11,7 @@ module Bootboot
 
     def check_bundler_version
       self.class.hook("before-install-all") do
-        next if Bundler::VERSION >= "1.17.0" || !GEMFILE_NEXT.exist?
+        next if Bundler::VERSION >= "1.17.0" || !GEMFILE_NEXT_LOCK.exist?
 
         Bundler.ui.warn(<<-EOM.gsub(/\s+/, " "))
           Bootboot can't automatically update the Gemfile_next.lock because you are running
@@ -30,7 +30,11 @@ module Bootboot
       self.class.hook("after-install-all") do
         current_definition = Bundler.definition
 
-        next if !GEMFILE_NEXT.exist? || nothing_changed?(current_definition) || Bundler.default_lockfile == GEMFILE_NEXT
+        next if !GEMFILE_NEXT_LOCK.exist? ||
+                nothing_changed?(current_definition) ||
+                ENV[DUALBOOT_NEXT] ||
+                ENV[DUALBOOT_PREVIOUS]
+
         update!(current_definition)
       end
     end
@@ -40,15 +44,36 @@ module Bootboot
     end
 
     def update!(current_definition)
-      Bundler.ui.confirm("Updating the #{GEMFILE_NEXT}")
-      ENV[DUALBOOT_ENV] = '1'
+      env = which_env
+      lock = which_lock
+
+      Bundler.ui.confirm("Updating the #{lock}")
+      ENV[env] = '1'
+      ENV['SKIP_BUNDLER_PATCH'] = '1'
 
       unlock = current_definition.instance_variable_get(:@unlock)
-      definition = Bundler::Definition.build(GEMFILE, GEMFILE_NEXT, unlock)
+      definition = Bundler::Definition.build(GEMFILE, lock, unlock)
       definition.resolve_remotely!
-      definition.lock(GEMFILE_NEXT)
+      definition.lock(lock)
     ensure
-      ENV.delete(DUALBOOT_ENV)
+      ENV.delete(env)
+      ENV.delete('SKIP_BUNDLER_PATCH')
+    end
+
+    def which_env
+      if Bundler.default_lockfile.to_s =~ /_next\.lock/
+        DUALBOOT_PREVIOUS
+      else
+        DUALBOOT_NEXT
+      end
+    end
+
+    def which_lock
+      if Bundler.default_lockfile.to_s =~ /_next\.lock/
+        GEMFILE_LOCK
+      else
+        GEMFILE_NEXT_LOCK
+      end
     end
   end
 end

@@ -14,6 +14,19 @@ class BootbootTest < Minitest::Test
     end
   end
 
+  def test_does_not_sync_the_gemfile_next_lock_when_nothing_changed
+    write_gemfile do |file, dir|
+      FileUtils.cp("#{file.path}.lock", gemfile_next(file))
+      File.write(file, 'gem "warning"', mode: 'a')
+
+      output = run_bundler_command('bundle install', file.path)
+      assert_match("Updating the #{file.path}_next.lock", output)
+
+      output = run_bundler_command('bundle install', file.path)
+      refute_match("Updating the #{file.path}_next.lock", output)
+    end
+  end
+
   def test_sync_the_gemfile_next_after_installation_of_new_gem
     write_gemfile do |file, dir|
       FileUtils.cp("#{file.path}.lock", gemfile_next(file))
@@ -112,6 +125,38 @@ class BootbootTest < Minitest::Test
           file.path, gemfile_next(file), false
         ).locked_deps['warning'].requirement.to_s
       )
+    end
+  end
+
+  def test_sync_the_lock_when_the_next_lock_gets_updated_rak
+    gemfile_content = <<-EOM
+      source "https://rubygems.org"
+      plugin 'bootboot', git: '#{Bundler.root}'
+      Plugin.send(:load_plugin, 'bootboot') if Plugin.installed?('bootboot')
+
+      unless ENV['DEPENDENCIES_PREVIOUS']
+        enable_dual_booting if Plugin.installed?('bootboot')
+      end
+    EOM
+
+    write_gemfile(gemfile_content) do |file, dir|
+      FileUtils.cp(gemfile_next(file), "#{file.path}.lock")
+      File.write(file, 'gem "warning"', mode: 'a')
+
+      run_bundler_command('bundle install', file.path)
+
+      assert Bundler::Definition.build(file.path, "#{file.path}.lock", false).locked_deps['warning']
+      assert Bundler::Definition.build(file.path, gemfile_next(file), false).locked_deps['warning']
+    end
+  end
+
+  def test_does_not_sync_the_gemfile_next_lock_when_installing_env_is_set
+    write_gemfile do |file, dir|
+      FileUtils.cp("#{file.path}.lock", gemfile_next(file))
+      File.write(file, 'gem "warning"', mode: 'a')
+
+      output = run_bundler_command('bundle install', file.path, env: { 'DEPENDENCIES_NEXT' => '1' })
+      refute_match("Updating the", output)
     end
   end
 
