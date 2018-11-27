@@ -3,5 +3,8 @@ cache: bundler
 language: ruby
 before_install:
   - gem update bundler
+script:
+  - bundle exec rubocop --config .rubocop.yml
+  - bundle exec rake test
 notifications:
   email: false

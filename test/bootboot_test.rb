@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "test_helper"
 require 'tempfile'
 require 'open3'
@@ -5,7 +7,7 @@ require 'fileutils'
 
 class BootbootTest < Minitest::Test
   def test_does_not_sync_the_gemfile_next_lock_when_unexisting
-    write_gemfile do |file, dir|
+    write_gemfile do |file, _dir|
       File.write(file, 'gem "warning"', mode: 'a')
 
       run_bundler_command('bundle install', file.path)
@@ -15,7 +17,7 @@ class BootbootTest < Minitest::Test
   end
 
   def test_does_not_sync_the_gemfile_next_lock_when_nothing_changed
-    write_gemfile do |file, dir|
+    write_gemfile do |file, _dir|
       FileUtils.cp("#{file.path}.lock", gemfile_next(file))
       File.write(file, 'gem "warning"', mode: 'a')
 
@@ -28,7 +30,7 @@ class BootbootTest < Minitest::Test
   end
 
   def test_sync_the_gemfile_next_after_installation_of_new_gem
-    write_gemfile do |file, dir|
+    write_gemfile do |file, _dir|
       FileUtils.cp("#{file.path}.lock", gemfile_next(file))
       File.write(file, 'gem "warning"', mode: 'a')
 
@@ -40,7 +42,7 @@ class BootbootTest < Minitest::Test
   end
 
   def test_sync_the_gemfile_next_after_removal_of_gem
-    write_gemfile do |file, dir|
+    write_gemfile do |file, _dir|
       FileUtils.cp("#{file.path}.lock", gemfile_next(file))
       File.write(file, 'gem "warning"', mode: 'a')
 
@@ -59,7 +61,7 @@ class BootbootTest < Minitest::Test
   end
 
   def test_sync_the_gemfile_next_after_update_of_gem
-    write_gemfile do |file, dir|
+    write_gemfile do |file, _dir|
       FileUtils.cp("#{file.path}.lock", gemfile_next(file))
       File.write(file, 'gem "warning", "0.10.1"', mode: 'a')
 
@@ -100,7 +102,7 @@ class BootbootTest < Minitest::Test
   end
 
   def test_sync_the_gemfile_next_when_gemfile_contain_if_else_statement
-    write_gemfile do |file, dir|
+    write_gemfile do |file, _dir|
       FileUtils.cp("#{file.path}.lock", gemfile_next(file))
       File.write(file, <<-EOM, mode: 'a')
         if ENV['DEPENDENCIES_NEXT']
@@ -139,7 +141,7 @@ class BootbootTest < Minitest::Test
       end
     EOM
 
-    write_gemfile(gemfile_content) do |file, dir|
+    write_gemfile(gemfile_content) do |file, _dir|
       FileUtils.cp(gemfile_next(file), "#{file.path}.lock")
       File.write(file, 'gem "warning"', mode: 'a')
 
@@ -151,7 +153,7 @@ class BootbootTest < Minitest::Test
   end
 
   def test_does_not_sync_the_gemfile_next_lock_when_installing_env_is_set
-    write_gemfile do |file, dir|
+    write_gemfile do |file, _dir|
       FileUtils.cp("#{file.path}.lock", gemfile_next(file))
       File.write(file, 'gem "warning"', mode: 'a')
 
@@ -161,7 +163,7 @@ class BootbootTest < Minitest::Test
   end
 
   def test_bootboot_command_initialize_the_next_lock_and_update_the_gemfile
-    write_gemfile("source 'https://rubygems.org'\n#{plugin}\n") do |file, dir|
+    write_gemfile("source 'https://rubygems.org'\n#{plugin}\n") do |file, _dir|
       run_bundler_command('bundle bootboot', file.path)
 
       assert File.exist?(gemfile_next(file))
@@ -214,7 +216,7 @@ class BootbootTest < Minitest::Test
   end
 
   def plugin
-    branch = `git rev-parse --abbrev-ref HEAD`.strip
+    branch = %x(git rev-parse --abbrev-ref HEAD).strip
 
     "plugin 'bootboot', git: '#{Bundler.root}', branch: '#{branch}'"
   end
