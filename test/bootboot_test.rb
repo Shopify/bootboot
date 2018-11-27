@@ -60,6 +60,29 @@ class BootbootTest < Minitest::Test
     end
   end
 
+  def test_sync_the_gemfile_next_after_installation_of_new_gem_with_custom_bootboot_env
+    write_gemfile("source 'https://rubygems.org'\n#{plugin}\n") do |file, _dir|
+      File.write(file, <<-EOM, mode: 'a')
+        Bundler.settings.set_local('bootboot_env_prefix', 'SHOPIFY')
+
+        if ENV['SHOPIFY_NEXT']
+          gem 'minitest', '5.11.3'
+        end
+      EOM
+
+      run_bundler_command('bundle bootboot', file.path)
+
+      run_bundler_command('bundle install', file.path, env: { 'SHOPIFY_NEXT' => '1' })
+      output = run_bundler_command(
+        'bundle exec ruby -e "require \'minitest\';puts Minitest::VERSION"',
+        file.path,
+        env: { 'SHOPIFY_NEXT' => '1' }
+      )
+
+      assert_equal '5.11.3', output.strip
+    end
+  end
+
   def test_sync_the_gemfile_next_after_update_of_gem
     write_gemfile do |file, _dir|
       FileUtils.cp("#{file.path}.lock", gemfile_next(file))
