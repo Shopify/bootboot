@@ -1,4 +1,4 @@
-## 👢👢 Bootboot
+## 👢👢 Bootboot   - [![Build Status](https://travis-ci.com/Shopify/bootboot.svg?branch=master)](https://travis-ci.com/Shopify/bootboot)
 
 Introduction
 ------------
