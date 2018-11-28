@@ -32,8 +32,8 @@ module Bootboot
 
         next if !GEMFILE_NEXT_LOCK.exist? ||
                 nothing_changed?(current_definition) ||
-                ENV[DUALBOOT_NEXT] ||
-                ENV[DUALBOOT_PREVIOUS]
+                ENV[Bootboot.env_next] ||
+                ENV[Bootboot.env_previous]
 
         update!(current_definition)
       end
@@ -62,9 +62,9 @@ module Bootboot
 
     def which_env
       if Bundler.default_lockfile.to_s =~ /_next\.lock/
-        DUALBOOT_PREVIOUS
+        Bootboot.env_previous
       else
-        DUALBOOT_NEXT
+        Bootboot.env_next
       end
     end
 

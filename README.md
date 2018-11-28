@@ -55,8 +55,16 @@ Dual boot it!
 ------------
 If you want to boot using the dependencies from the `Gemfile_next.lock`, run any bundler command prefixed with the `DEPENDENCIES_NEXT=1` ENV variable. I.e. `DEPENDENCIES_NEXT=1 bundle exec irb`.
 
+Configuration (Optional)
+------------------------
+By default Bootboot will use the `DEPENDENCIES_NEXT` environment variable to update your Gemfile_next.lock. You can however configure it. For example, if you want the dualboot to happen when the `SHOPIFY_NEXT` env variable is present, you simply have to add this in your Gemfile:
 
-Keep` the Gemfile_next.lock` in sync
+```ruby
+# Gemfile
+Bundler.settings.set_local('booboot_env_previx', 'SHOPIFY')
+```
+
+Keep the `Gemfile_next.lock` in sync
 ------------
 When a developer bumps or adds a dependency, Bootboot will ensure that the `Gemfile_next.lock` snapshot gets updated.
 
