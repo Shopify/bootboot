@@ -61,7 +61,7 @@ By default Bootboot will use the `DEPENDENCIES_NEXT` environment variable to upd
 
 ```ruby
 # Gemfile
-Bundler.settings.set_local('booboot_env_previx', 'SHOPIFY')
+Bundler.settings.set_local('bootboot_env_prefix', 'SHOPIFY')
 ```
 
 Keep the `Gemfile_next.lock` in sync
