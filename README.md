@@ -51,6 +51,8 @@ plugin 'bootboot', '~> 0.1.1'
 2) Run `bundle install && bundle bootboot`
 3) You're done. Commit the Gemfile and the Gemfile_next.lock
 
+Note: You should only run `bundle bootboot` once to install the plugin, otherwise your Gemfile will get updated each time you run it.
+
 Dual boot it!
 ------------
 If you want to boot using the dependencies from the `Gemfile_next.lock`, run any bundler command prefixed with the `DEPENDENCIES_NEXT=1` ENV variable. I.e. `DEPENDENCIES_NEXT=1 bundle exec irb`.
@@ -70,3 +72,5 @@ When a developer bumps or adds a dependency, Bootboot will ensure that the `Gemf
 
 **However, this feature is only available if you are on Bundler `>= 1.17`**
 Other versions will trigger a warning message telling them that Bootboot can't automatically keep the `Gemfile_next.lock` in sync.
+
+If you use the deployment flag (`bundle --deployment`) this plugin won't work on Bundler `>= 2.0`.
