@@ -73,4 +73,4 @@ When a developer bumps or adds a dependency, Bootboot will ensure that the `Gemf
 **However, this feature is only available if you are on Bundler `>= 1.17`**
 Other versions will trigger a warning message telling them that Bootboot can't automatically keep the `Gemfile_next.lock` in sync.
 
-If you use the deployment flag (`bundle --deployment`) this plugin won't work on Bundler `>= 2.0`.
+If you use the deployment flag (`bundle --deployment`) this plugin won't work on Bundler `<= 2.0.1`.
