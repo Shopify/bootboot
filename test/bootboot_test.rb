@@ -229,12 +229,20 @@ class BootbootTest < Minitest::Test
         ).ruby_version.gem_version.to_s
       )
 
+      error_message = <<~EOE
+        Running `bundle install` with a version of Ruby other than the one
+        specified in Gemfile_next.lock should update Gemfile_next.lock so that
+        gems are properly resolved using the Ruby version specified in the
+        respective lockfile regardless of the running Ruby version.
+      EOE
+
       with_env_next do
         assert_equal(
           "9.9.9",
           Bundler::Definition.build(
             file.path, gemfile_next(file), false
-          ).ruby_version.gem_version.to_s
+          ).ruby_version.gem_version.to_s,
+          error_message
         )
       end
     end
@@ -251,7 +259,13 @@ class BootbootTest < Minitest::Test
         end
       EOM
 
-      assert_raises BundleInstallError do
+      error_message = <<~EOE
+        Running `DEPENDENCIES_NEXT=1 bundle install` with a version of Ruby
+        other than the one specified in Gemfile_next.lock should fail so that
+        gems are not installed under the wrong Ruby.
+      EOE
+
+      assert_raises BundleInstallError, error_message do
         run_bundler_command('bundle install', file.path, env: { Bootboot.env_next => '1' })
       end
     end
