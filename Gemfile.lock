@@ -56,11 +56,10 @@ PLATFORMS
 
 DEPENDENCIES
   bootboot!
-  bundler (~> 1.17)
   minitest (~> 5.0)
   package_cloud
   rake
   rubocop
 
 BUNDLED WITH
-   1.17.1
+   2.1.4
