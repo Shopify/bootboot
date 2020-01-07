@@ -310,7 +310,7 @@ class BootbootTest < Minitest::Test
 
   def run_bundler_command(command, gemfile_path, env: {})
     output = nil
-    Bundler.with_clean_env do
+    Bundler.with_unbundled_env do
       output, status = Open3.capture2e({ 'BUNDLE_GEMFILE' => gemfile_path }.merge(env), command)
 
       raise BundleInstallError, "bundle install failed: #{output}" unless status.success?
