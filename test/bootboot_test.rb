@@ -226,7 +226,7 @@ class BootbootTest < Minitest::Test
         RUBY_VERSION,
         Bundler::Definition.build(
           file.path, "#{file.path}.lock", false
-        ).ruby_version.gem_version.to_s
+        ).locked_ruby_version_object.gem_version.to_s
       )
 
       with_env_next do
@@ -234,38 +234,7 @@ class BootbootTest < Minitest::Test
           "9.9.9",
           Bundler::Definition.build(
             file.path, gemfile_next(file), false
-          ).ruby_version.gem_version.to_s
-        )
-      end
-    end
-  end
-
-  def test_bundle_install_with_different_ruby_updating_gemfile_lock_succeeds
-    write_gemfile do |file, _dir|
-      FileUtils.cp("#{file.path}.lock", gemfile_next(file))
-      File.write(file, <<-EOM, mode: 'a')
-        if ENV['DEPENDENCIES_NEXT']
-          ruby '#{RUBY_VERSION}'
-        else
-          ruby '0.0.0'
-        end
-      EOM
-
-      run_bundler_command('bundle install', file.path, env: { Bootboot.env_next => '1' })
-
-      assert_equal(
-        "0.0.0",
-        Bundler::Definition.build(
-          file.path, "#{file.path}.lock", false
-        ).ruby_version.gem_version.to_s
-      )
-
-      with_env_next do
-        assert_equal(
-          RUBY_VERSION,
-          Bundler::Definition.build(
-            file.path, gemfile_next(file), false
-          ).ruby_version.gem_version.to_s
+          ).locked_ruby_version_object.gem_version.to_s
         )
       end
     end

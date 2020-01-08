@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "bootboot/ruby_source"
+
 module DefinitionPatch
   def initialize(wrong_lock, *args)
     lockfile = if ENV['BOOTBOOT_UPDATING_ALTERNATE_LOCKFILE']
@@ -12,24 +14,28 @@ module DefinitionPatch
   end
 end
 
-module MetadataPatch
-  def specs
-    metadata_specs = super
-
-    # The spec name for Ruby changed between Bundler 1.17 and 2.0, so we
-    # want to get the Ruby spec name that the definition is depending on
-    ruby_spec = metadata_specs.find { |d| d.name[/[R|r]uby\0/] }
-    alternate_ruby_version = Bundler::Definition.build(Bootboot::GEMFILE, nil, false).ruby_version
-
-    if ruby_spec && alternate_ruby_version && alternate_ruby_version != Bundler::RubyVersion.system
-      specs_with_ruby = metadata_specs.dup
-      ruby_spec = Gem::Specification.new(ruby_spec.name, alternate_ruby_version.to_gem_version_with_patchlevel)
-      ruby_spec.source = self
-      specs_with_ruby << ruby_spec
-      return specs_with_ruby
+module RubyVersionPatch
+  def system
+    if ENV['BOOTBOOT_UPDATING_ALTERNATE_LOCKFILE']
+      # If we're updating the alternate file and the ruby version specified in
+      # the Gemfile is different from the Ruby version currently running, we
+      # want to write the version specified in `Gemfile` for the current
+      # dependency set to the lock file
+      Bundler::Definition.build(Bootboot::GEMFILE, nil, false).ruby_version || super
+    else
+      super
     end
+  end
+end
 
-    metadata_specs
+module DefinitionSourceRequirementsPatch
+  def source_requirements
+    super.tap do |source_requirements|
+      # Bundler has a hard requirement that Ruby should be in the Metadata
+      # source, so this replaces Ruby's Metadata source with our custom source
+      source = Bootboot::RubySource.new({})
+      source_requirements[source.ruby_spec_name] = source
+    end
   end
 end
 
@@ -39,10 +45,12 @@ module SharedHelpersPatch
   end
 end
 
+Bundler::Definition.prepend(DefinitionSourceRequirementsPatch)
+Bundler::RubyVersion.singleton_class.prepend(RubyVersionPatch)
+
 Bundler::Dsl.class_eval do
   def enable_dual_booting
     Bundler::Definition.prepend(DefinitionPatch)
-    Bundler::Source::Metadata.prepend(MetadataPatch)
     Bundler::SharedHelpers.singleton_class.prepend(SharedHelpersPatch)
   end
 end
