@@ -209,6 +209,56 @@ class BootbootTest < Minitest::Test
     end
   end
 
+  def test_bundle_install_with_different_ruby_updating_gemfile_next_lock_succeeds
+    write_gemfile do |file, _dir|
+      FileUtils.cp("#{file.path}.lock", gemfile_next(file))
+      File.write(file, <<-EOM, mode: 'a')
+        if ENV['DEPENDENCIES_NEXT']
+          ruby '9.9.9'
+        else
+          ruby '#{RUBY_VERSION}'
+        end
+      EOM
+
+      run_bundler_command('bundle install', file.path)
+
+      assert_equal(
+        RUBY_VERSION,
+        Bundler::Definition.build(
+          file.path, "#{file.path}.lock", false
+        ).locked_ruby_version_object.gem_version.to_s
+      )
+
+      with_env_next do
+        assert_equal(
+          "9.9.9",
+          Bundler::Definition.build(
+            file.path, gemfile_next(file), false
+          ).locked_ruby_version_object.gem_version.to_s
+        )
+      end
+    end
+  end
+
+  def test_bundle_install_with_different_ruby_for_installing_gemfile_next_lock_fails
+    write_gemfile do |file, _dir|
+      FileUtils.cp("#{file.path}.lock", gemfile_next(file))
+      File.write(file, <<-EOM, mode: 'a')
+        if ENV['DEPENDENCIES_NEXT']
+          ruby '9.9.9'
+        else
+          ruby '#{RUBY_VERSION}'
+        end
+      EOM
+
+      error = assert_raises BundleInstallError do
+        run_bundler_command('bundle install', file.path, env: { Bootboot.env_next => '1' })
+      end
+
+      assert_match("Your Ruby version is #{RUBY_VERSION}, but your Gemfile specified 9.9.9", error.message)
+    end
+  end
+
   private
 
   def gemfile_next(gemfile)
@@ -244,13 +294,23 @@ class BootbootTest < Minitest::Test
     "plugin 'bootboot', git: '#{Bundler.root}', branch: '#{branch}'"
   end
 
+  class BundleInstallError < StandardError; end
+
   def run_bundler_command(command, gemfile_path, env: {})
     output = nil
     Bundler.with_unbundled_env do
       output, status = Open3.capture2e({ 'BUNDLE_GEMFILE' => gemfile_path }.merge(env), command)
 
-      raise StandardError, "bundle install failed: #{output}" unless status.success?
+      raise BundleInstallError, "bundle install failed: #{output}" unless status.success?
     end
     output
+  end
+
+  def with_env_next
+    prev = ENV[Bootboot.env_next]
+    ENV[Bootboot.env_next] = "1"
+    yield
+  ensure
+    ENV[Bootboot.env_next] = prev
   end
 end

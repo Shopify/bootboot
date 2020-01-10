@@ -49,7 +49,7 @@ module Bootboot
 
       Bundler.ui.confirm("Updating the #{lock}")
       ENV[env] = '1'
-      ENV['SKIP_BUNDLER_PATCH'] = '1'
+      ENV['BOOTBOOT_UPDATING_ALTERNATE_LOCKFILE'] = '1'
 
       unlock = current_definition.instance_variable_get(:@unlock)
       definition = Bundler::Definition.build(GEMFILE, lock, unlock)
@@ -57,7 +57,7 @@ module Bootboot
       definition.lock(lock)
     ensure
       ENV.delete(env)
-      ENV.delete('SKIP_BUNDLER_PATCH')
+      ENV.delete('BOOTBOOT_UPDATING_ALTERNATE_LOCKFILE')
     end
 
     def which_env
