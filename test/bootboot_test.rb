@@ -259,6 +259,38 @@ class BootbootTest < Minitest::Test
     end
   end
 
+  def test_bundle_caching_both_sets_of_gems
+    puts 'test_bundle_caching_both_sets_of_gems'
+    write_gemfile do |file, dir|
+      FileUtils.cp("#{file.path}.lock", gemfile_next(file))
+      File.write(file, <<-EOM, mode: 'a')
+        if ENV['DEPENDENCIES_NEXT']
+          gem 'minitest', '5.14.0'
+        else
+          gem 'minitest', '5.13.0'
+        end
+      EOM
+
+      run_bundle_command('install', file.path)
+      run_bundle_command('install', file.path, env: { Bootboot.env_next => '1' })
+      run_bundle_command('pack', file.path)
+      run_bundle_command('pack', file.path, env: { Bootboot.env_next => '1' })
+
+      assert File.exist?(dir + '/vendor/cache/minitest-5.13.0.gem')
+      refute File.exist?(dir + '/vendor/cache/minitest-5.14.0.gem')
+      assert File.exist?(dir + '/vendor/cache-next/minitest-5.14.0.gem')
+      refute File.exist?(dir + '/vendor/cache-next/minitest-5.13.0.gem')
+      assert run_bundle_command('info minitest', file.path).include?('minitest (5.13.0)')
+      refute run_bundle_command('info minitest', file.path).include?('minitest (5.14.0)')
+      assert run_bundle_command(
+        'info minitest', file.path, env: { Bootboot.env_next => '1' }
+      ).include?('minitest (5.14.0)')
+      refute run_bundle_command(
+        'info minitest', file.path, env: { Bootboot.env_next => '1' }
+      ).include?('minitest (5.13.0)')
+    end
+  end
+
   private
 
   def gemfile_next(gemfile)

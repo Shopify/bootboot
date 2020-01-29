@@ -52,5 +52,10 @@ Bundler::Dsl.class_eval do
   def enable_dual_booting
     Bundler::Definition.prepend(DefinitionPatch)
     Bundler::SharedHelpers.singleton_class.prepend(SharedHelpersPatch)
+    Bundler::Settings.prepend(Module.new do
+      def app_cache_path
+        'vendor/cache-next'
+      end
+    end)
   end
 end

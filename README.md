@@ -140,6 +140,15 @@ specs:
 
 **Note:** It is important to note that at this point, `some_gem 2.0` **will not** be installed on your system, it will simply be specified in `Gemfile_next.lock`, since installing it on the system would require changing the running Ruby version. This is sufficient to keep `Gemfile_next.lock` in sync, but is a potential source of confusion. To install gems under both versions of Ruby, see the next section.
 
+Vendoring both sets of gems
+---------------------------
+To vendor both sets of gems, make sure caching is enabled by checking `bundle config` or bundle gems using `bundle pack`.
+
+```bash
+bundle pack
+DEPENDENCIES_NEXT=1 bundle pack
+```
+
 ### Example: running Ruby scripts while dual booting Ruby versions
 
 When running Ruby scripts while dual booting two different Ruby versions, you have to remember to do two things simultaneously for every command:
