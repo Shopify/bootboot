@@ -24,9 +24,8 @@ Gem::Specification.new do |spec|
   spec.metadata["source_code_uri"] = "https://github.com/shopify/bootboot"
   spec.metadata["changelog_uri"] = "https://github.com/Shopify/bootboot/blob/master/CHANGELOG.md"
 
-  spec.files = Dir.chdir(File.expand_path('..', __FILE__)) do
-    %x(git ls-files -z).split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
-  end
+  spec.files = %x(git ls-files lib plugins.rb README.md LICENSE.txt).split($RS)
+  spec.extra_rdoc_files = ['LICENSE.txt', 'README.md']
   spec.require_paths = %w(lib)
 
   spec.add_development_dependency "rake", "~> 10.0"
