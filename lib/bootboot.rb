@@ -20,6 +20,13 @@ module Bootboot
       env_prefix + '_PREVIOUS'
     end
 
+    def load
+      return if Bundler::Plugin.instance_variable_get(:@loaded_plugin_names).include?('bootboot')
+
+      GemfileNextAutoSync.new.setup
+      Command.new.setup
+    end
+
     private
 
     def env_prefix
@@ -27,6 +34,3 @@ module Bootboot
     end
   end
 end
-
-Bootboot::GemfileNextAutoSync.new.setup
-Bootboot::Command.new.setup

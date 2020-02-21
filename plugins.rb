@@ -1,3 +1,5 @@
 # frozen_string_literal: true
 
-require_relative "lib/bootboot"
+$LOAD_PATH.unshift(File.expand_path("../lib", __FILE__))
+require "bootboot"
+Bootboot.load

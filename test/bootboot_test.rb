@@ -259,6 +259,22 @@ class BootbootTest < Minitest::Test
     end
   end
 
+  # If a developer downloads an app using bootboot (maybe they just joined the
+  # team) and they update the Gemfile without first running "bundle install",
+  # bootboot should properly sync Gemfile_next.lock
+  def test_syncs_the_gemfile_when_first_installed
+    write_gemfile do |file, dir|
+      FileUtils.cp("#{file.path}.lock", gemfile_next(file))
+      # emulate cloning a new app
+      FileUtils.rm_rf("#{dir}/.bundle")
+      File.write(file, "gem 'warning'", mode: "a")
+      run_bundler_command("bundle install", file.path)
+
+      assert Bundler::Definition.build(file.path, "#{file.path}.lock", false).locked_deps['warning']
+      assert Bundler::Definition.build(file.path, gemfile_next(file), false).locked_deps['warning']
+    end
+  end
+
   private
 
   def gemfile_next(gemfile)

@@ -24,7 +24,9 @@ module Bootboot
 
     def opt_in
       self.class.hook('before-install-all') do
-        @previous_lock = Bundler.default_lockfile.read
+        if Bundler.default_lockfile.exist?
+          @previous_lock = Bundler.default_lockfile.read
+        end
       end
 
       self.class.hook("after-install-all") do
