@@ -8,9 +8,9 @@ require 'fileutils'
 class BootbootTest < Minitest::Test
   def test_does_not_sync_the_gemfile_next_lock_when_unexisting
     write_gemfile do |file, _dir|
-      File.write(file, 'gem "warning"', mode: 'a')
+      File.write(file, 'gem "rake"', mode: 'a')
 
-      run_bundler_command('bundle install', file.path)
+      run_bundle_command('install', file.path)
 
       refute File.exist?(gemfile_next(file))
     end
@@ -19,12 +19,12 @@ class BootbootTest < Minitest::Test
   def test_does_not_sync_the_gemfile_next_lock_when_nothing_changed
     write_gemfile do |file, _dir|
       FileUtils.cp("#{file.path}.lock", gemfile_next(file))
-      File.write(file, 'gem "warning"', mode: 'a')
+      File.write(file, 'gem "rake"', mode: 'a')
 
-      output = run_bundler_command('bundle install', file.path)
+      output = run_bundle_command('install', file.path)
       assert_match("Updating the #{file.path}_next.lock", output)
 
-      output = run_bundler_command('bundle install', file.path)
+      output = run_bundle_command('install', file.path)
       refute_match("Updating the #{file.path}_next.lock", output)
     end
   end
@@ -32,31 +32,31 @@ class BootbootTest < Minitest::Test
   def test_sync_the_gemfile_next_after_installation_of_new_gem
     write_gemfile do |file, _dir|
       FileUtils.cp("#{file.path}.lock", gemfile_next(file))
-      File.write(file, 'gem "warning"', mode: 'a')
+      File.write(file, 'gem "rake"', mode: 'a')
 
-      run_bundler_command('bundle install', file.path)
+      run_bundle_command('install', file.path)
 
-      assert Bundler::Definition.build(file.path, "#{file.path}.lock", false).locked_deps['warning']
-      assert Bundler::Definition.build(file.path, gemfile_next(file), false).locked_deps['warning']
+      assert Bundler::Definition.build(file.path, "#{file.path}.lock", false).locked_deps['rake']
+      assert Bundler::Definition.build(file.path, gemfile_next(file), false).locked_deps['rake']
     end
   end
 
   def test_sync_the_gemfile_next_after_removal_of_gem
     write_gemfile do |file, _dir|
       FileUtils.cp("#{file.path}.lock", gemfile_next(file))
-      File.write(file, 'gem "warning"', mode: 'a')
+      File.write(file, 'gem "rake"', mode: 'a')
 
-      run_bundler_command('bundle install', file.path)
+      run_bundle_command('install', file.path)
 
-      assert Bundler::Definition.build(file.path, "#{file.path}.lock", false).locked_deps['warning']
-      assert Bundler::Definition.build(file.path, gemfile_next(file), false).locked_deps['warning']
+      assert Bundler::Definition.build(file.path, "#{file.path}.lock", false).locked_deps['rake']
+      assert Bundler::Definition.build(file.path, gemfile_next(file), false).locked_deps['rake']
 
-      File.write(file, file.read.gsub('gem "warning"'))
+      File.write(file, file.read.gsub('gem "rake"'))
 
-      run_bundler_command('bundle install', file.path)
+      run_bundle_command('install', file.path)
 
-      refute Bundler::Definition.build(file.path, "#{file.path}.lock", false).locked_deps['warning']
-      refute Bundler::Definition.build(file.path, gemfile_next(file), false).locked_deps['warning']
+      refute Bundler::Definition.build(file.path, "#{file.path}.lock", false).locked_deps['rake']
+      refute Bundler::Definition.build(file.path, gemfile_next(file), false).locked_deps['rake']
     end
   end
 
@@ -70,11 +70,11 @@ class BootbootTest < Minitest::Test
         end
       EOM
 
-      run_bundler_command('bundle bootboot', file.path)
+      run_bundle_command('bootboot', file.path)
 
-      run_bundler_command('bundle install', file.path, env: { 'SHOPIFY_NEXT' => '1' })
-      output = run_bundler_command(
-        'bundle exec ruby -e "require \'minitest\';puts Minitest::VERSION"',
+      run_bundle_command('install', file.path, env: { 'SHOPIFY_NEXT' => '1' })
+      output = run_bundle_command(
+        'exec ruby -e "require \'minitest\';puts Minitest::VERSION"',
         file.path,
         env: { 'SHOPIFY_NEXT' => '1' }
       )
@@ -86,40 +86,40 @@ class BootbootTest < Minitest::Test
   def test_sync_the_gemfile_next_after_update_of_gem
     write_gemfile do |file, _dir|
       FileUtils.cp("#{file.path}.lock", gemfile_next(file))
-      File.write(file, 'gem "warning", "0.10.1"', mode: 'a')
+      File.write(file, 'gem "rake", "10.5.0"', mode: 'a')
 
-      run_bundler_command('bundle install', file.path)
+      run_bundle_command('install', file.path)
 
       assert_equal(
-        "= 0.10.1",
+        "= 10.5.0",
         Bundler::Definition.build(
           file.path, "#{file.path}.lock", false
-        ).locked_deps['warning'].requirement.to_s
+        ).locked_deps['rake'].requirement.to_s
       )
 
       assert_equal(
-        "= 0.10.1",
+        "= 10.5.0",
         Bundler::Definition.build(
           file.path, gemfile_next(file), false
-        ).locked_deps['warning'].requirement.to_s
+        ).locked_deps['rake'].requirement.to_s
       )
 
-      File.write(file, file.read.gsub('0.10.1', '0.10.0'))
+      File.write(file, file.read.gsub('10.5.0', '11.3.0'))
 
-      run_bundler_command('bundle update warning', file.path)
+      run_bundle_command('update rake', file.path)
 
       assert_equal(
-        "= 0.10.0",
+        "= 11.3.0",
         Bundler::Definition.build(
           file.path, "#{file.path}.lock", false
-        ).locked_deps['warning'].requirement.to_s
+        ).locked_deps['rake'].requirement.to_s
       )
 
       assert_equal(
-        "= 0.10.0",
+        "= 11.3.0",
         Bundler::Definition.build(
           file.path, gemfile_next(file), false
-        ).locked_deps['warning'].requirement.to_s
+        ).locked_deps['rake'].requirement.to_s
       )
     end
   end
@@ -129,26 +129,26 @@ class BootbootTest < Minitest::Test
       FileUtils.cp("#{file.path}.lock", gemfile_next(file))
       File.write(file, <<-EOM, mode: 'a')
         if ENV['DEPENDENCIES_NEXT']
-          gem 'warning', '0.10.1'
+          gem 'rake', '11.3.0'
         else
-          gem 'warning', '0.10.0'
+          gem 'rake', '10.5.0'
         end
       EOM
 
-      run_bundler_command('bundle install', file.path)
+      run_bundle_command('install', file.path)
 
       assert_equal(
-        "= 0.10.0",
+        "= 10.5.0",
         Bundler::Definition.build(
           file.path, "#{file.path}.lock", false
-        ).locked_deps['warning'].requirement.to_s
+        ).locked_deps['rake'].requirement.to_s
       )
 
       assert_equal(
-        "= 0.10.1",
+        "= 11.3.0",
         Bundler::Definition.build(
           file.path, gemfile_next(file), false
-        ).locked_deps['warning'].requirement.to_s
+        ).locked_deps['rake'].requirement.to_s
       )
     end
   end
@@ -166,28 +166,28 @@ class BootbootTest < Minitest::Test
 
     write_gemfile(gemfile_content) do |file, _dir|
       FileUtils.cp(gemfile_next(file), "#{file.path}.lock")
-      File.write(file, 'gem "warning"', mode: 'a')
+      File.write(file, 'gem "rake"', mode: 'a')
 
-      run_bundler_command('bundle install', file.path)
+      run_bundle_command('install', file.path)
 
-      assert Bundler::Definition.build(file.path, "#{file.path}.lock", false).locked_deps['warning']
-      assert Bundler::Definition.build(file.path, gemfile_next(file), false).locked_deps['warning']
+      assert Bundler::Definition.build(file.path, "#{file.path}.lock", false).locked_deps['rake']
+      assert Bundler::Definition.build(file.path, gemfile_next(file), false).locked_deps['rake']
     end
   end
 
   def test_does_not_sync_the_gemfile_next_lock_when_installing_env_is_set
     write_gemfile do |file, _dir|
       FileUtils.cp("#{file.path}.lock", gemfile_next(file))
-      File.write(file, 'gem "warning"', mode: 'a')
+      File.write(file, 'gem "rake"', mode: 'a')
 
-      output = run_bundler_command('bundle install', file.path, env: { 'DEPENDENCIES_NEXT' => '1' })
+      output = run_bundle_command('install', file.path, env: { 'DEPENDENCIES_NEXT' => '1' })
       refute_match("Updating the", output)
     end
   end
 
   def test_bootboot_command_initialize_the_next_lock_and_update_the_gemfile
     write_gemfile("source 'https://rubygems.org'\n#{plugin}\n") do |file, _dir|
-      run_bundler_command('bundle bootboot', file.path)
+      run_bundle_command('bootboot', file.path)
 
       assert File.exist?(gemfile_next(file))
       assert_equal File.read(gemfile_next(file)), File.read("#{file.path}.lock")
@@ -198,9 +198,9 @@ class BootbootTest < Minitest::Test
         end
       EOM
 
-      run_bundler_command('bundle install', file.path, env: { 'DEPENDENCIES_NEXT' => '1' })
-      output = run_bundler_command(
-        'bundle exec ruby -e "require \'minitest\';puts Minitest::VERSION"',
+      run_bundle_command('install', file.path, env: { 'DEPENDENCIES_NEXT' => '1' })
+      output = run_bundle_command(
+        'exec ruby -e "require \'minitest\';puts Minitest::VERSION"',
         file.path,
         env: { 'DEPENDENCIES_NEXT' => '1' }
       )
@@ -220,7 +220,7 @@ class BootbootTest < Minitest::Test
         end
       EOM
 
-      run_bundler_command('bundle install', file.path)
+      run_bundle_command('install', file.path)
 
       assert_equal(
         RUBY_VERSION,
@@ -252,7 +252,7 @@ class BootbootTest < Minitest::Test
       EOM
 
       error = assert_raises BundleInstallError do
-        run_bundler_command('bundle install', file.path, env: { Bootboot.env_next => '1' })
+        run_bundle_command('install', file.path, env: { Bootboot.env_next => '1' })
       end
 
       assert_match("Your Ruby version is #{RUBY_VERSION}, but your Gemfile specified 9.9.9", error.message)
@@ -281,7 +281,7 @@ class BootbootTest < Minitest::Test
       f.rewind
     end
 
-    run_bundler_command('bundle install', file.path)
+    run_bundle_command('install', file.path)
 
     yield(file, dir)
   ensure
@@ -296,8 +296,10 @@ class BootbootTest < Minitest::Test
 
   class BundleInstallError < StandardError; end
 
-  def run_bundler_command(command, gemfile_path, env: {})
+  def run_bundle_command(subcommand, gemfile_path, env: {})
     output = nil
+    bundler_version = ENV.fetch('BOOTBOOT_TEST_BUNDLER_VERSION')
+    command = "bundle _#{bundler_version}_ #{subcommand}"
     Bundler.with_unbundled_env do
       output, status = Open3.capture2e({ 'BUNDLE_GEMFILE' => gemfile_path }.merge(env), command)
 
