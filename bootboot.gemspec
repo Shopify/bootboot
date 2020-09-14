@@ -23,6 +23,7 @@ Gem::Specification.new do |spec|
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = "https://github.com/shopify/bootboot"
   spec.metadata["changelog_uri"] = "https://github.com/Shopify/bootboot/blob/master/CHANGELOG.md"
+  spec.metadata["allowed_push_host"] = "https://rubygems.org"
 
   spec.files = %x(git ls-files lib plugins.rb README.md LICENSE.txt).split($RS)
   spec.extra_rdoc_files = ['LICENSE.txt', 'README.md']
