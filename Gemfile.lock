@@ -30,7 +30,7 @@ GEM
       ast (~> 2.4.0)
     rainbow (2.2.2)
       rake
-    rake (10.5.0)
+    rake (13.0.6)
     rest-client (2.0.2)
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
