@@ -7,18 +7,19 @@ GEM
   remote: https://rubygems.org/
   specs:
     ast (2.4.2)
-    domain_name (0.5.20180417)
+    domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
     highline (1.6.20)
-    http-cookie (1.0.3)
+    http-accept (1.7.0)
+    http-cookie (1.0.4)
       domain_name (~> 0.5)
     json_pure (1.8.1)
-    mime-types (3.2.2)
+    mime-types (3.4.1)
       mime-types-data (~> 3.2015)
-    mime-types-data (3.2018.0812)
-    minitest (5.11.3)
+    mime-types-data (3.2022.0105)
+    minitest (5.15.0)
     netrc (0.11.0)
-    package_cloud (0.3.05)
+    package_cloud (0.3.08)
       highline (= 1.6.20)
       json_pure (= 1.8.1)
       rainbow (= 2.2.2)
@@ -31,7 +32,8 @@ GEM
       rake
     rake (13.0.6)
     regexp_parser (2.3.0)
-    rest-client (2.0.2)
+    rest-client (2.1.0)
+      http-accept (>= 1.7.0, < 2.0)
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
@@ -53,7 +55,7 @@ GEM
     thor (0.20.3)
     unf (0.1.4)
       unf_ext
-    unf_ext (0.0.7.5)
+    unf_ext (0.0.8.1)
     unicode-display_width (2.1.0)
 
 PLATFORMS
@@ -68,4 +70,4 @@ DEPENDENCIES
   rubocop-shopify
 
 BUNDLED WITH
-   2.3.4
+   2.3.12
