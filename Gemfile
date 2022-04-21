@@ -9,7 +9,6 @@ gemspec
 gem "rubocop-shopify", require: false
 
 group :deployment do
-  gem "package_cloud"
   gem "rake"
 end
 
