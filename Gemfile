@@ -6,11 +6,13 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 
 gemspec
 
+gem "rubocop-shopify", require: false
+
 group :deployment do
-  gem 'package_cloud'
-  gem 'rake'
+  gem "package_cloud"
+  gem "rake"
 end
 
 group :test do
-  gem 'rubocop'
+  gem "rubocop"
 end

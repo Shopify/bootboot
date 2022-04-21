@@ -7,11 +7,11 @@ require "bootboot/version"
 Gem::Specification.new do |spec|
   spec.name          = "bootboot"
   spec.version       = Bootboot::VERSION
-  spec.authors       = %w(Shopify)
-  spec.email         = %w(rails@shopify.com)
+  spec.authors       = ["Shopify"]
+  spec.email         = ["rails@shopify.com"]
 
   spec.summary       = "Dualbooting your ruby app made easy."
-  spec.description   = <<-EOM.gsub(/\W+/, ' ')
+  spec.description   = <<-EOM.gsub(/\W+/, " ")
     This gem remove the overhead of monkeypatching your Gemfile in order to
     dualboot your app using the Gemfile_next.lock strategy.
     It also ensure that dependencies in the Gemfile.lock and Gemfile_next.lock are
@@ -26,9 +26,9 @@ Gem::Specification.new do |spec|
   spec.metadata["allowed_push_host"] = "https://rubygems.org"
 
   spec.files = %x(git ls-files lib plugins.rb README.md LICENSE.txt).split($RS)
-  spec.extra_rdoc_files = ['LICENSE.txt', 'README.md']
-  spec.require_paths = %w(lib)
+  spec.extra_rdoc_files = ["LICENSE.txt", "README.md"]
+  spec.require_paths = ["lib"]
 
-  spec.add_development_dependency "rake", "~> 10.0"
-  spec.add_development_dependency "minitest", "~> 5.0"
+  spec.add_development_dependency("minitest", "~> 5.0")
+  spec.add_development_dependency("rake", "~> 10.0")
 end
