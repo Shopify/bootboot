@@ -260,7 +260,6 @@ class BootbootTest < Minitest::Test
   end
 
   def test_bundle_caching_both_sets_of_gems
-    puts "test_bundle_caching_both_sets_of_gems"
     write_gemfile do |file, dir|
       FileUtils.cp("#{file.path}.lock", gemfile_next(file))
       File.write(file, <<-EOM, mode: "a")
