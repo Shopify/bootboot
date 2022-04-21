@@ -6,13 +6,12 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    ast (2.4.0)
+    ast (2.4.2)
     domain_name (0.5.20180417)
       unf (>= 0.0.5, < 1.0.0)
     highline (1.6.20)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
-    jaro_winkler (1.5.4)
     json_pure (1.8.1)
     mime-types (3.2.2)
       mime-types-data (~> 3.2015)
@@ -25,29 +24,37 @@ GEM
       rainbow (= 2.2.2)
       rest-client (~> 2.0)
       thor (~> 0.18)
-    parallel (1.19.1)
-    parser (2.7.0.2)
-      ast (~> 2.4.0)
+    parallel (1.22.1)
+    parser (3.1.2.0)
+      ast (~> 2.4.1)
     rainbow (2.2.2)
       rake
-    rake (10.5.0)
+    rake (13.0.6)
+    regexp_parser (2.3.0)
     rest-client (2.0.2)
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
-    rubocop (0.79.0)
-      jaro_winkler (~> 1.5.1)
+    rexml (3.2.5)
+    rubocop (1.28.1)
       parallel (~> 1.10)
-      parser (>= 2.7.0.1)
+      parser (>= 3.1.0.0)
       rainbow (>= 2.2.2, < 4.0)
+      regexp_parser (>= 1.8, < 3.0)
+      rexml
+      rubocop-ast (>= 1.17.0, < 2.0)
       ruby-progressbar (~> 1.7)
-      unicode-display_width (>= 1.4.0, < 1.7)
-    ruby-progressbar (1.10.1)
+      unicode-display_width (>= 1.4.0, < 3.0)
+    rubocop-ast (1.17.0)
+      parser (>= 3.1.1.0)
+    rubocop-shopify (1.0.0)
+      rubocop (>= 0.78.0)
+    ruby-progressbar (1.11.0)
     thor (0.20.3)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.5)
-    unicode-display_width (1.6.1)
+    unicode-display_width (2.1.0)
 
 PLATFORMS
   ruby
@@ -58,6 +65,7 @@ DEPENDENCIES
   package_cloud
   rake
   rubocop
+  rubocop-shopify
 
 BUNDLED WITH
-   2.2.22
+   2.3.4

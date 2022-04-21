@@ -23,7 +23,7 @@ module Bootboot
     end
 
     def opt_in
-      self.class.hook('before-install-all') do
+      self.class.hook("before-install-all") do
         @previous_lock = Bundler.default_lockfile.read
       end
 
@@ -31,9 +31,9 @@ module Bootboot
         current_definition = Bundler.definition
 
         next if !GEMFILE_NEXT_LOCK.exist? ||
-                nothing_changed?(current_definition) ||
-                ENV[Bootboot.env_next] ||
-                ENV[Bootboot.env_previous]
+          nothing_changed?(current_definition) ||
+          ENV[Bootboot.env_next] ||
+          ENV[Bootboot.env_previous]
 
         update!(current_definition)
       end
@@ -48,8 +48,8 @@ module Bootboot
       lock = which_lock
 
       Bundler.ui.confirm("Updating the #{lock}")
-      ENV[env] = '1'
-      ENV['BOOTBOOT_UPDATING_ALTERNATE_LOCKFILE'] = '1'
+      ENV[env] = "1"
+      ENV["BOOTBOOT_UPDATING_ALTERNATE_LOCKFILE"] = "1"
 
       unlock = current_definition.instance_variable_get(:@unlock)
       definition = Bundler::Definition.build(GEMFILE, lock, unlock)
@@ -57,7 +57,7 @@ module Bootboot
       definition.lock(lock)
     ensure
       ENV.delete(env)
-      ENV.delete('BOOTBOOT_UPDATING_ALTERNATE_LOCKFILE')
+      ENV.delete("BOOTBOOT_UPDATING_ALTERNATE_LOCKFILE")
     end
 
     def which_env

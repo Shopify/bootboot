@@ -4,7 +4,7 @@ require "bootboot/ruby_source"
 
 module DefinitionPatch
   def initialize(wrong_lock, *args)
-    lockfile = if ENV['BOOTBOOT_UPDATING_ALTERNATE_LOCKFILE']
+    lockfile = if ENV["BOOTBOOT_UPDATING_ALTERNATE_LOCKFILE"]
       wrong_lock
     else
       Bootboot::GEMFILE_NEXT_LOCK
@@ -16,7 +16,7 @@ end
 
 module RubyVersionPatch
   def system
-    if ENV['BOOTBOOT_UPDATING_ALTERNATE_LOCKFILE']
+    if ENV["BOOTBOOT_UPDATING_ALTERNATE_LOCKFILE"]
       # If we're updating the alternate file and the ruby version specified in
       # the Gemfile is different from the Ruby version currently running, we
       # want to write the version specified in `Gemfile` for the current
@@ -54,7 +54,7 @@ Bundler::Dsl.class_eval do
     Bundler::SharedHelpers.singleton_class.prepend(SharedHelpersPatch)
     Bundler::Settings.prepend(Module.new do
       def app_cache_path
-        'vendor/cache-next'
+        "vendor/cache-next"
       end
     end)
   end
