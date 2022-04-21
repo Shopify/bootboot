@@ -26,7 +26,7 @@ module Bootboot
         # version is present, as well as when updating the lockfile itself.
         ruby_version = Bundler::Definition.build(Bootboot::GEMFILE, nil, false).ruby_version
         ruby_version ||= Bundler::RubyVersion.system
-        ruby_spec = Gem::Specification.new(ruby_spec_name, ruby_version.to_gem_version_with_patchlevel)
+        ruby_spec = Gem::Specification.new(ruby_spec_name, ruby_version.gem_version)
         ruby_spec.source = self
         idx << ruby_spec
       end
