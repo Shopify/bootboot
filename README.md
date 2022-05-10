@@ -1,4 +1,4 @@
-## 👢👢 Bootboot   - [![Build Status](https://travis-ci.com/Shopify/bootboot.svg?branch=master)](https://travis-ci.com/Shopify/bootboot)
+## 👢👢 Bootboot   - [![Build Status](https://github.com/Shopify/bootboot/actions/workflows/ci.yml/badge.svg)](https://github.com/Shopify/bootboot/actions/workflows/ci.yml)
 
 Introduction
 ------------
