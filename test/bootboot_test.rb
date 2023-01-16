@@ -76,7 +76,7 @@ class BootbootTest < Minitest::Test
       output = run_bundle_command(
         'exec ruby -e "require \'minitest\';puts Minitest::VERSION"',
         file.path,
-        env: { "SHOPIFY_NEXT" => "1" }
+        env: { "SHOPIFY_NEXT" => "1" },
       )
 
       assert_equal("5.15.0", output.strip)
@@ -94,14 +94,14 @@ class BootbootTest < Minitest::Test
         "= 10.5.0",
         Bundler::Definition.build(
           file.path, "#{file.path}.lock", false
-        ).locked_deps["rake"].requirement.to_s
+        ).locked_deps["rake"].requirement.to_s,
       )
 
       assert_equal(
         "= 10.5.0",
         Bundler::Definition.build(
           file.path, gemfile_next(file), false
-        ).locked_deps["rake"].requirement.to_s
+        ).locked_deps["rake"].requirement.to_s,
       )
 
       File.write(file, file.read.gsub("10.5.0", "11.3.0"))
@@ -112,14 +112,14 @@ class BootbootTest < Minitest::Test
         "= 11.3.0",
         Bundler::Definition.build(
           file.path, "#{file.path}.lock", false
-        ).locked_deps["rake"].requirement.to_s
+        ).locked_deps["rake"].requirement.to_s,
       )
 
       assert_equal(
         "= 11.3.0",
         Bundler::Definition.build(
           file.path, gemfile_next(file), false
-        ).locked_deps["rake"].requirement.to_s
+        ).locked_deps["rake"].requirement.to_s,
       )
     end
   end
@@ -141,14 +141,14 @@ class BootbootTest < Minitest::Test
         "= 10.5.0",
         Bundler::Definition.build(
           file.path, "#{file.path}.lock", false
-        ).locked_deps["rake"].requirement.to_s
+        ).locked_deps["rake"].requirement.to_s,
       )
 
       assert_equal(
         "= 11.3.0",
         Bundler::Definition.build(
           file.path, gemfile_next(file), false
-        ).locked_deps["rake"].requirement.to_s
+        ).locked_deps["rake"].requirement.to_s,
       )
     end
   end
@@ -202,7 +202,7 @@ class BootbootTest < Minitest::Test
       output = run_bundle_command(
         'exec ruby -e "require \'minitest\';puts Minitest::VERSION"',
         file.path,
-        env: { "DEPENDENCIES_NEXT" => "1" }
+        env: { "DEPENDENCIES_NEXT" => "1" },
       )
 
       assert_equal("5.15.0", output.strip)
@@ -226,7 +226,7 @@ class BootbootTest < Minitest::Test
         RUBY_VERSION,
         Bundler::Definition.build(
           file.path, "#{file.path}.lock", false
-        ).locked_ruby_version_object.gem_version.to_s
+        ).locked_ruby_version_object.gem_version.to_s,
       )
 
       with_env_next do
@@ -234,7 +234,7 @@ class BootbootTest < Minitest::Test
           "9.9.9",
           Bundler::Definition.build(
             file.path, gemfile_next(file), false
-          ).locked_ruby_version_object.gem_version.to_s
+          ).locked_ruby_version_object.gem_version.to_s,
         )
       end
     end
