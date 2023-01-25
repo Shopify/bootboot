@@ -1,6 +1,8 @@
 # Change log
 
-## master (unreleased)
+## main (unreleased)
+
+## 0.2.2 (2023-01-25)
 
 * [#55](https://github.com/Shopify/bootboot/pull/55): fix failures when non-exact Ruby requirement specified in Gemfile. (@ashkulz)
 
