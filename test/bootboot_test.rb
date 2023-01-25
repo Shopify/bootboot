@@ -240,6 +240,19 @@ class BootbootTest < Minitest::Test
     end
   end
 
+  def test_bundle_install_without_specific_ruby_version_succeeds
+    write_gemfile do |file, _dir|
+      FileUtils.cp("#{file.path}.lock", gemfile_next(file))
+      File.write(file, <<-EOM, mode: "a")
+        ruby '~> #{RUBY_VERSION}'
+      EOM
+
+      run_bundle_command("install", file.path)
+      run_bundle_command("install", file.path, env: { "DEPENDENCIES_NEXT" => "1" })
+      self.assertions += 2 # both commands have succeeded
+    end
+  end
+
   def test_bundle_install_with_different_ruby_for_installing_gemfile_next_lock_fails
     skip("broken with a newer version of bundler")
 
