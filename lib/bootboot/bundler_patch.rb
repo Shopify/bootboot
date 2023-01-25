@@ -16,15 +16,17 @@ end
 
 module RubyVersionPatch
   def system
-    if ENV["BOOTBOOT_UPDATING_ALTERNATE_LOCKFILE"]
-      # If we're updating the alternate file and the ruby version specified in
-      # the Gemfile is different from the Ruby version currently running, we
-      # want to write the version specified in `Gemfile` for the current
-      # dependency set to the lock file
-      Bundler::Definition.build(Bootboot::GEMFILE, nil, false).ruby_version || super
-    else
-      super
-    end
+    # Only monkey-patch if we're updating the alternate file
+    return super unless ENV["BOOTBOOT_UPDATING_ALTERNATE_LOCKFILE"]
+
+    # Bail out if the Gemfile doesn't specify a Ruby requirement
+    requested_ruby = Bundler::Definition.build(Bootboot::GEMFILE, nil, false).ruby_version
+    return super unless requested_ruby
+
+    # If the requirement is for an exact Ruby version, we should substitute the
+    # system version with the requirement so that it gets written to the lock file
+    requirement = Gem::Requirement.new(requested_ruby.versions)
+    requirement.exact? ? requested_ruby : super
   end
 end
 
