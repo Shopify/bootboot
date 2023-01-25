@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+* [#55](https://github.com/Shopify/bootboot/pull/55): fix failures when non-exact Ruby requirement specified in Gemfile. (@ashkulz)
+
 ## 0.2.1 (2022-04-21)
 
 * [#41](https://github.com/Shopify/bootboot/pull/41): Stop using `Bundler::RubyVersion#to_gem_version_with_patchlevel`. (@deivid-rodriguez)
