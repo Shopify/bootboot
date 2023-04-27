@@ -14,11 +14,11 @@ There are two schools on how to dual boot your app, each having advantages and d
 gem "some_gem"
 
 # Gemfile
-gem "rails", "~> 5.1.0"
+gem "rails", "~> 6.1.7.3"
 eval_gemfile "Gemfile.common"
 
 # Gemfile.next
-gem "rails", "~> 5.2.0"
+gem "rails", "~> 7.0.4.3"
 eval_gemfile "Gemfile.common"
 ```
 
@@ -27,9 +27,9 @@ eval_gemfile "Gemfile.common"
 # Gemfile
 
 if ENV['DEPENDENCIES_NEXT']
-  gem "rails", "~> 5.2.0"
+  gem "rails", "~> 7.0.4.3"
 else
-  gem "rails", "~> 5.1.0"
+  gem "rails", "~> 6.1.7.3"
 end
 ```
 -----------------------------
@@ -44,7 +44,7 @@ Installation
 ------------
 1) In your Gemfile, add this
 ```ruby
-plugin 'bootboot', '~> 0.2.1'
+plugin 'bootboot', '~> 0.2.2'
 ```
 2) Run `bundle install && bundle bootboot`
 3) You're done. Commit the Gemfile and the Gemfile_next.lock
@@ -74,9 +74,9 @@ While dual booting is often used for framework upgrades, it is also possible to 
 # Gemfile
 
 if ENV['DEPENDENCIES_NEXT']
-  ruby '2.6.5'
+  ruby '3.2.2'
 else
-  ruby '2.5.7'
+  ruby '3.1.4'
 end
 ```
 
@@ -85,15 +85,15 @@ Dual booting Ruby versions does incur some additional complications however, see
 Example: updating a gem while dual booting Ruby versions
 --------------------------------------------------------
 
-To dual boot an app while upgrading from Ruby 2.5.7 to Ruby 2.6.5, your Gemfile would look like this:
+To dual boot an app while upgrading from Ruby 3.1.4 to Ruby 3.2.2, your Gemfile would look like this:
 
 ```ruby
 # Gemfile
 
 if ENV['DEPENDENCIES_NEXT']
-  ruby '2.6.5'
+  ruby '3.2.2'
 else
-  ruby '2.5.7'
+  ruby '3.1.4'
 end
 ```
 
@@ -101,30 +101,30 @@ After running `bundle install`, `Gemfile.lock` will have:
 
 ```
 RUBY VERSION
-   ruby 2.5.7p206
+   ruby 3.1.4p206
 ```
 
 and `Gemfile_next.lock` will have:
 
 ```
 RUBY VERSION
-   ruby 2.6.5p114
+   ruby 3.2.2p114
 ```
 Assuming there's a gem `some_gem` with the following constraints in its gemspecs:
 
 ```ruby
 # some_gem-1.0.gemspec
 spec.version = "1.0"
-spec.required_ruby_version = '>= 2.5.7'
+spec.required_ruby_version = '>= 3.1.4'
 ```
 
 ```ruby
 # some_gem-2.0.gemspec
 spec.version = "2.0"
-spec.required_ruby_version = '>= 2.6.5'
+spec.required_ruby_version = '>= 3.2.2'
 ```
 
-Running `bundle update some_gem` will use Ruby 2.5.7 to resolve `some_gem` for `Gemfile.lock` and Ruby 2.6.5 to resolve `some_gem` for `Gemfile_next.lock` with the following results:
+Running `bundle update some_gem` will use Ruby 3.1.4 to resolve `some_gem` for `Gemfile.lock` and Ruby 3.2.2 to resolve `some_gem` for `Gemfile_next.lock` with the following results:
 
 Gemfile.lock:
 ```
@@ -158,9 +158,9 @@ When running Ruby scripts while dual booting two different Ruby versions, you ha
 So to run a spec in both versions, the workflow would look like this (assuming chruby for version management):
 
 ```sh
-$ chruby 2.5.7
+$ chruby 3.1.4
 $ bundle exec rspec spec/some_spec.rb
-$ chruby 2.6.5
+$ chruby 3.2.2
 $ DEPENDENCIES_NEXT=1 bundle exec rspec spec/some_spec.rb
 ```
 
@@ -169,11 +169,11 @@ Perhaps more importantly, to update or install a gem, the workflow would look li
 ```sh
 # This will update Gemfile.lock and Gemfile_next.lock and install the gems
 # specified in Gemfile.lock:
-$ chruby 2.5.7
+$ chruby 3.1.4
 $ bundle update some_gem
 # This will actually install the gems specified in Gemfile_next.lock under the
 # correct Ruby installation:
-$ chruby 2.6.5
+$ chruby 3.2.2
 $ DEPENDENCIES_NEXT=1 bundle install
 ```
 
