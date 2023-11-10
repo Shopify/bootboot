@@ -335,9 +335,7 @@ class BootbootTest < Minitest::Test
   end
 
   def plugin
-    branch = %x(git rev-parse --abbrev-ref HEAD).strip
-
-    "plugin 'bootboot', git: '#{Bundler.root}', branch: '#{branch}'"
+    "plugin 'bootboot', path: '#{Bundler.root}'"
   end
 
   class BundleInstallError < StandardError; end
