@@ -29,6 +29,8 @@ Gem::Specification.new do |spec|
   spec.extra_rdoc_files = ["LICENSE.txt", "README.md"]
   spec.require_paths = ["lib"]
 
+  spec.required_ruby_version = ">= 2.7.0"
+
   spec.add_development_dependency("minitest", "~> 5.0")
   spec.add_development_dependency("rake", "~> 10.0")
 end
