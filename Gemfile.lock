@@ -7,31 +7,35 @@ GEM
   remote: https://rubygems.org/
   specs:
     ast (2.4.2)
-    json (2.6.3)
+    json (2.7.1)
+    language_server-protocol (3.17.0.3)
     minitest (5.17.0)
-    parallel (1.22.1)
-    parser (3.2.0.0)
+    parallel (1.24.0)
+    parser (3.3.0.5)
       ast (~> 2.4.1)
+      racc
+    racc (1.7.3)
     rainbow (3.1.1)
     rake (13.0.6)
-    regexp_parser (2.6.1)
-    rexml (3.2.5)
-    rubocop (1.43.0)
+    regexp_parser (2.9.0)
+    rexml (3.2.6)
+    rubocop (1.62.1)
       json (~> 2.3)
+      language_server-protocol (>= 3.17.0)
       parallel (~> 1.10)
-      parser (>= 3.2.0.0)
+      parser (>= 3.3.0.2)
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 1.8, < 3.0)
       rexml (>= 3.2.5, < 4.0)
-      rubocop-ast (>= 1.24.1, < 2.0)
+      rubocop-ast (>= 1.31.1, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 3.0)
-    rubocop-ast (1.24.1)
-      parser (>= 3.1.1.0)
+    rubocop-ast (1.31.2)
+      parser (>= 3.3.0.4)
     rubocop-shopify (2.11.1)
       rubocop (~> 1.42)
-    ruby-progressbar (1.11.0)
-    unicode-display_width (2.4.2)
+    ruby-progressbar (1.13.0)
+    unicode-display_width (2.5.0)
 
 PLATFORMS
   ruby
@@ -44,4 +48,4 @@ DEPENDENCIES
   rubocop-shopify
 
 BUNDLED WITH
-   2.4.22
+   2.5.7
