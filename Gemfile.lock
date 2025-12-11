@@ -9,7 +9,7 @@ GEM
     ast (2.4.2)
     json (2.7.1)
     language_server-protocol (3.17.0.3)
-    minitest (5.17.0)
+    minitest (5.26.2)
     parallel (1.24.0)
     parser (3.3.0.5)
       ast (~> 2.4.1)
@@ -42,7 +42,7 @@ PLATFORMS
 
 DEPENDENCIES
   bootboot!
-  minitest (~> 5.0)
+  minitest
   rake
   rubocop
   rubocop-shopify
