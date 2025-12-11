@@ -17,7 +17,6 @@ jobs:
       with:
         ruby-version: ${{ matrix.ruby }}
         bundler-cache: true
-        bundler: latest
     - name: Ruby Tests
       run: bundle exec rake test
     - name: RuboCop
