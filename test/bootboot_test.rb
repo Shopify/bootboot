@@ -66,7 +66,7 @@ class BootbootTest < Minitest::Test
         Bundler.settings.set_local('bootboot_env_prefix', 'SHOPIFY')
 
         if ENV['SHOPIFY_NEXT']
-          gem 'minitest', '5.15.0'
+          gem 'minitest', '5.26.0'
         end
       EOM
 
@@ -79,7 +79,7 @@ class BootbootTest < Minitest::Test
         env: { "SHOPIFY_NEXT" => "1" },
       )
 
-      assert_equal("5.15.0", output.strip)
+      assert_equal("5.26.0", output.strip)
     end
   end
 
@@ -194,7 +194,7 @@ class BootbootTest < Minitest::Test
 
       File.write(file, <<-EOM, mode: "a")
         if ENV['DEPENDENCIES_NEXT']
-          gem 'minitest', '5.15.0'
+          gem 'minitest', '5.25.0'
         end
       EOM
 
@@ -205,7 +205,7 @@ class BootbootTest < Minitest::Test
         env: { "DEPENDENCIES_NEXT" => "1" },
       )
 
-      assert_equal("5.15.0", output.strip)
+      assert_equal("5.25.0", output.strip)
     end
   end
 

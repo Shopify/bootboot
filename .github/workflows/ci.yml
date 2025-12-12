@@ -8,7 +8,7 @@ jobs:
     name: Ruby ${{ matrix.ruby }}
     strategy:
       matrix:
-        ruby: ["2.7", "3.0", "3.1", "3.2"]
+        ruby: ["3.2", "3.3"]
     steps:
     - name: Check out code
       uses: actions/checkout@v3
@@ -17,7 +17,6 @@ jobs:
       with:
         ruby-version: ${{ matrix.ruby }}
         bundler-cache: true
-        bundler: latest
     - name: Ruby Tests
       run: bundle exec rake test
     - name: RuboCop

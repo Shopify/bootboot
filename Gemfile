@@ -8,8 +8,12 @@ gemspec
 
 gem "rubocop-shopify", require: false
 
-group :deployment do
+group :deployment, :development do
   gem "rake"
+end
+
+group :development do
+  gem "minitest"
 end
 
 group :test do
