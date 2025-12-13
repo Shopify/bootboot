@@ -25,7 +25,7 @@ Gem::Specification.new do |spec|
   spec.metadata["changelog_uri"] = "https://github.com/Shopify/bootboot/blob/master/CHANGELOG.md"
   spec.metadata["allowed_push_host"] = "https://rubygems.org"
 
-  spec.files = %x(git ls-files -z lib plugins.rb README.md LICENSE.txt).split("\x0")
+  spec.files = Dir["lib/**/*", "LICENSE.txt", "README.md", "plugins.rb"]
   spec.extra_rdoc_files = ["LICENSE.txt", "README.md"]
   spec.require_paths = ["lib"]
 
