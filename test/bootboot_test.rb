@@ -66,7 +66,7 @@ class BootbootTest < Minitest::Test
         Bundler.settings.set_local('bootboot_env_prefix', 'SHOPIFY')
 
         if ENV['SHOPIFY_NEXT']
-          gem 'minitest', '5.26.0'
+          gem 'minitest', '5.26.1'
         end
       EOM
 
@@ -79,7 +79,7 @@ class BootbootTest < Minitest::Test
         env: { "SHOPIFY_NEXT" => "1" },
       )
 
-      assert_equal("5.26.0", output.strip)
+      assert_equal("5.26.1", output.strip)
     end
   end
 
@@ -194,7 +194,7 @@ class BootbootTest < Minitest::Test
 
       File.write(file, <<-EOM, mode: "a")
         if ENV['DEPENDENCIES_NEXT']
-          gem 'minitest', '5.25.0'
+          gem 'minitest', '5.26.2'
         end
       EOM
 
@@ -205,7 +205,7 @@ class BootbootTest < Minitest::Test
         env: { "DEPENDENCIES_NEXT" => "1" },
       )
 
-      assert_equal("5.25.0", output.strip)
+      assert_equal("5.26.2", output.strip)
     end
   end
 
@@ -279,9 +279,9 @@ class BootbootTest < Minitest::Test
       FileUtils.cp("#{file.path}.lock", gemfile_next(file))
       File.write(file, <<-EOM, mode: "a")
         if ENV['DEPENDENCIES_NEXT']
-          gem 'minitest', '5.15.0'
+          gem 'minitest', '5.26.2'
         else
-          gem 'minitest', '5.14.4'
+          gem 'minitest', '5.26.1'
         end
       EOM
 
@@ -290,18 +290,18 @@ class BootbootTest < Minitest::Test
       run_bundle_command("pack", file.path)
       run_bundle_command("pack", file.path, env: { Bootboot.env_next => "1" })
 
-      assert(File.exist?(dir + "/vendor/cache/minitest-5.14.4.gem"))
-      refute(File.exist?(dir + "/vendor/cache/minitest-5.15.0.gem"))
-      assert(File.exist?(dir + "/vendor/cache-next/minitest-5.15.0.gem"))
-      refute(File.exist?(dir + "/vendor/cache-next/minitest-5.14.4.gem"))
-      assert(run_bundle_command("info minitest", file.path).include?("minitest (5.14.4)"))
-      refute(run_bundle_command("info minitest", file.path).include?("minitest (5.15.0)"))
+      assert(File.exist?(dir + "/vendor/cache/minitest-5.26.1.gem"))
+      refute(File.exist?(dir + "/vendor/cache/minitest-5.26.2.gem"))
+      assert(File.exist?(dir + "/vendor/cache-next/minitest-5.26.2.gem"))
+      refute(File.exist?(dir + "/vendor/cache-next/minitest-5.26.1.gem"))
+      assert(run_bundle_command("info minitest", file.path).include?("minitest (5.26.1)"))
+      refute(run_bundle_command("info minitest", file.path).include?("minitest (5.26.2)"))
       assert(run_bundle_command(
         "info minitest", file.path, env: { Bootboot.env_next => "1" }
-      ).include?("minitest (5.15.0)"))
+      ).include?("minitest (5.26.2)"))
       refute(run_bundle_command(
         "info minitest", file.path, env: { Bootboot.env_next => "1" }
-      ).include?("minitest (5.14.4)"))
+      ).include?("minitest (5.26.1)"))
     end
   end
 
