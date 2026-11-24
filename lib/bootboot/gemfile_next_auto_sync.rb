@@ -51,8 +51,7 @@ module Bootboot
       ENV[env] = "1"
       ENV["BOOTBOOT_UPDATING_ALTERNATE_LOCKFILE"] = "1"
 
-      unlock = current_definition.instance_variable_get(:@unlock)
-      definition = Bundler::Definition.build(GEMFILE, lock, unlock)
+      definition = Bundler::Definition.build(GEMFILE, lock, current_definition.bootboot_unlock)
       definition.resolve_remotely!
       definition.lock(lock)
     ensure

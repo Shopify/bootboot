@@ -124,6 +124,41 @@ class BootbootTest < Minitest::Test
     end
   end
 
+  def test_sync_the_gemfile_next_after_update_of_gem_without_gemfile_change
+    write_gemfile do |file, _dir|
+      FileUtils.cp("#{file.path}.lock", gemfile_next(file))
+      File.write(file, 'gem "rake", "10.5.0"', mode: "a")
+      run_bundle_command("install", file.path)
+      File.write(file, file.read.gsub(', "10.5.0"', ""))
+      run_bundle_command("install", file.path)
+
+      assert_equal("10.5.0", locked_version("rake", "#{file.path}.lock"))
+      assert_equal("10.5.0", locked_version("rake", gemfile_next(file)))
+
+      run_bundle_command("update rake", file.path)
+
+      refute_equal("10.5.0", locked_version("rake", "#{file.path}.lock"))
+      assert_equal(locked_version("rake", "#{file.path}.lock"), locked_version("rake", gemfile_next(file)))
+    end
+  end
+
+  def test_sync_the_gemfile_next_after_update_of_all_gems
+    write_gemfile do |file, _dir|
+      FileUtils.cp("#{file.path}.lock", gemfile_next(file))
+      File.write(file, 'gem "rake", "10.5.0"', mode: "a")
+      run_bundle_command("install", file.path)
+      File.write(file, file.read.gsub(', "10.5.0"', ""))
+      run_bundle_command("install", file.path)
+
+      assert_equal("10.5.0", locked_version("rake", gemfile_next(file)))
+
+      run_bundle_command("update --all", file.path)
+
+      refute_equal("10.5.0", locked_version("rake", "#{file.path}.lock"))
+      assert_equal(locked_version("rake", "#{file.path}.lock"), locked_version("rake", gemfile_next(file)))
+    end
+  end
+
   def test_sync_the_gemfile_next_when_gemfile_contain_if_else_statement
     write_gemfile do |file, _dir|
       FileUtils.cp("#{file.path}.lock", gemfile_next(file))
@@ -309,6 +344,10 @@ class BootbootTest < Minitest::Test
 
   def gemfile_next(gemfile)
     "#{gemfile.path}_next.lock"
+  end
+
+  def locked_version(gem_name, lockfile)
+    Bundler::LockfileParser.new(File.read(lockfile)).specs.find { |spec| spec.name == gem_name }.version.to_s
   end
 
   def write_gemfile(content = nil)

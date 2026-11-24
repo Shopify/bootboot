@@ -14,6 +14,17 @@ module DefinitionPatch
   end
 end
 
+module DefinitionUnlockPatch
+  def initialize(lockfile, dependencies, sources, unlock, *args)
+    @bootboot_unlock = unlock.is_a?(Hash) ? unlock.transform_values { |v| v.dup.freeze }.freeze : unlock
+    super
+  end
+
+  def bootboot_unlock
+    @bootboot_unlock.is_a?(Hash) ? @bootboot_unlock.transform_values(&:dup) : @bootboot_unlock
+  end
+end
+
 module RubyVersionPatch
   def system
     # Only monkey-patch if we're updating the alternate file
@@ -48,6 +59,7 @@ module SharedHelpersPatch
 end
 
 Bundler::Definition.prepend(DefinitionSourceRequirementsPatch)
+Bundler::Definition.prepend(DefinitionUnlockPatch)
 Bundler::RubyVersion.singleton_class.prepend(RubyVersionPatch)
 
 Bundler::Dsl.class_eval do
