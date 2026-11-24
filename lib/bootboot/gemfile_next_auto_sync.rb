@@ -54,10 +54,18 @@ module Bootboot
       unlock = current_definition.instance_variable_get(:@unlock)
       definition = Bundler::Definition.build(GEMFILE, lock, unlock)
       definition.resolve_remotely!
-      definition.lock(lock)
+      write_lock(definition, lock)
     ensure
       ENV.delete(env)
       ENV.delete("BOOTBOOT_UPDATING_ALTERNATE_LOCKFILE")
+    end
+
+    def write_lock(definition, lock)
+      if Gem::Version.new(Bundler::VERSION) >= Gem::Version.new("2.5.6")
+        definition.lock
+      else
+        definition.lock(lock)
+      end
     end
 
     def which_env
